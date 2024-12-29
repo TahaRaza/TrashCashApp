@@ -1,0 +1,45 @@
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+
+// Import screens
+import WelcomeScreen from '../screens/WelcomeScreen';
+import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+import QRCodeScreen from '../screens/QRCodeScreen';
+import DashboardScreen from '../screens/DashboardScreen';
+
+const Stack = createStackNavigator();
+
+const AppNavigator = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Screen name="Welcome" options={options.welcome} component={WelcomeScreen} />
+        <Stack.Screen name="Login" options={options.auth} component={LoginScreen} />
+        <Stack.Screen name="SignUp" options={options.auth} component={SignUpScreen} />
+        <Stack.Screen name="Dashboard" options={options.dashboard}  component={DashboardScreen} />
+        <Stack.Screen name="QRCode" options={options.qrCode} component={QRCodeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+const options = {
+  welcome: {
+    headerShown: false,
+  },
+  auth: {
+    headerShown: false,
+  },
+  qrCode: {
+    headerShown: false,  
+    title: 'Scan QR Code', 
+  },
+  dashboard: {
+    headerShown: false,
+    title: 'Dashboard'
+  },
+}
+
+export default AppNavigator;
