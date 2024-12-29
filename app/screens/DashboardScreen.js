@@ -1,6 +1,5 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, Pressable } from 'react-native';
-
 import { colors } from '../styles/theme';
 
 const DashboardScreen = ({ navigation }) => {
