@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import HomeScreen from '../screens/HomeScreen'; // New Home Screen
 import QRCodeScreen from '../screens/QRCodeScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 
@@ -18,7 +19,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Welcome" options={options.welcome} component={WelcomeScreen} />
         <Stack.Screen name="Login" options={options.auth} component={LoginScreen} />
         <Stack.Screen name="SignUp" options={options.auth} component={SignUpScreen} />
-        <Stack.Screen name="Dashboard" options={options.dashboard}  component={DashboardScreen} />
+        <Stack.Screen name="Home" options={options.home} component={HomeScreen} /> 
+        <Stack.Screen name="Dashboard" options={options.dashboard} component={DashboardScreen} />
         <Stack.Screen name="QRCode" options={options.qrCode} component={QRCodeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
@@ -32,14 +34,18 @@ const options = {
   auth: {
     headerShown: false,
   },
+  home: {
+    headerShown: false,
+    title: 'Home',
+  },
   qrCode: {
-    headerShown: false,  
-    title: 'Scan QR Code', 
+    headerShown: false,
+    title: 'Scan QR Code',
   },
   dashboard: {
     headerShown: false,
-    title: 'Dashboard'
+    title: 'Dashboard',
   },
-}
+};
 
 export default AppNavigator;

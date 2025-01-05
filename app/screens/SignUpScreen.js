@@ -4,14 +4,14 @@ import { colors } from '../styles/theme';
 import CustomButton from '../components/customButton';
 
 const SignUpScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+  const [userName, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
     // Placeholder for signup logic
-    console.log('Signed up with:', username, email, password);
-    navigation.navigate('Welcome'); // Placeholder for actual navigation
+    console.log('Signed up with:', userName, email, password);
+    navigation.navigate('Login'); 
   };
 
   return (
@@ -19,8 +19,8 @@ const SignUpScreen = ({ navigation }) => {
       <Text style={styles.header}>Sign Up</Text>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
+        placeholder="User Name"
+        value={userName}
         onChangeText={setUsername}
       />
       <TextInput

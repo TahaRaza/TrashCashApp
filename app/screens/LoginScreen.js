@@ -5,13 +5,13 @@ import CustomButton from '../components/customButton';
 import { colors } from '../styles/theme';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
+  const [UserName, setUserName] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     // Placeholder for login logic
-    console.log('Logged in with:', email, password);
-    navigation.navigate('Dashboard'); // Placeholder for actual navigation
+    console.log('Logged in with:', UserName, password);
+    navigation.navigate('Home', {username : UserName}); 
   };
 
   return (
@@ -19,9 +19,9 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.header}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="User Name"
+        value={UserName}
+        onChangeText={setUserName}
       />
       <TextInput
         style={styles.input}
