@@ -19,10 +19,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.tahahraza.TrashCashApp"
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e1b4ea12-5233-4731-89d7-85746eafe3f6"
+      }
     }
   }
 }
