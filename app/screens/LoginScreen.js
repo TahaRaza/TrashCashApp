@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-
+import { View, TextInput, StyleSheet, Text, Alert } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from 'E:/FYP/TrashCashApp/TrashCashApp/config/firebaseConfig.js'; // Import Firebase Auth
 import CustomButton from '../components/customButton';
 import { colors } from '../styles/theme';
 
 const LoginScreen = ({ navigation }) => {
-  const [UserName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Placeholder for login logic
-    console.log('Logged in with:', UserName, password);
-    navigation.navigate('Home', {username : UserName}); 
+  const handleLogin = async () => {
+    try {
+      // Firebase authentication logic
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log('Logged in with:', user.email);
+      Alert.alert('Success', 'Login Successful!');
+      navigation.navigate('Home', { username: user.email });
+    } catch (error) {
+      console.error('Login failed:', error.message);
+      Alert.alert('Error', error.message);
+    }
   };
 
   return (
@@ -19,9 +28,9 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.header}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="User Name"
-        value={UserName}
-        onChangeText={setUserName}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
@@ -31,7 +40,7 @@ const LoginScreen = ({ navigation }) => {
         onChangeText={setPassword}
       />
       <CustomButton title="Login" onPress={handleLogin} />
-      <CustomButton title={'Sign Up'} onPress={() => navigation.navigate('SignUp')} />
+      <CustomButton title="Sign Up" onPress={() => navigation.navigate('SignUp')} />
     </View>
   );
 };
