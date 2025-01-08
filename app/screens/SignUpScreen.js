@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Text, Alert } from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from 'E:/FYP/TrashCashApp/TrashCashApp/config/firebaseConfig.js';
 import { colors } from '../styles/theme';
 import CustomButton from '../components/customButton';
 
@@ -8,10 +10,24 @@ const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignUp = () => {
-    // Placeholder for signup logic
-    console.log('Signed up with:', userName, email, password);
-    navigation.navigate('Login'); 
+  const handleSignUp = async () => {
+    if (!userName || !email || !password) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    try {
+      // Sign up the user with Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log('User signed up:', user);
+      Alert.alert('Success', `Welcome, ${userName}!`);
+      navigation.navigate('Login'); // Navigate to Login after successful signup
+    } catch (error) {
+      console.error('Error signing up:', error.message);
+      Alert.alert('Error', error.message);
+    }
   };
 
   return (

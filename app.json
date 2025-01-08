@@ -23,7 +23,7 @@
       "package": "com.tahahraza.TrashCashApp"
     },
     "web": {
-      "favicon": "./app/assets/favicon.png"
+      "favicon": "./app/assets/favicon.png",
     },
     "extra": {
       "eas": {
