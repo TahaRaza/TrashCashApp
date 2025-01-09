@@ -1,11 +1,11 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Button, StyleSheet, Text, View, Alert } from 'react-native';
 import { colors } from '../styles/theme';
 import CustomButton from '../components/customButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const QRCodeScreen = ({ navigation }) => {
+const TestScreen = ({ navigation }) => {
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
@@ -129,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QRCodeScreen;
+export default TestScreen;
