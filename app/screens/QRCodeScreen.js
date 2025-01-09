@@ -1,26 +1,67 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, Button, View } from 'react-native';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { useState, useEffect } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { colors } from '../styles/theme';
 
 const QRCodeScreen = ({ navigation }) => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Scan a QR Code</Text>
-      
-      <View style={styles.qrCodeContainer}>
-        {/* Here you can add QR scanning functionality or a placeholder */}
-        <Text style={styles.placeholderText}>[QR Code Scanner Placeholder]</Text>
+  const [facing, setFacing] = useState('back');
+  const [permission, requestPermission] = useCameraPermissions();
+  const [scanned, setScanned] = useState(false);
+
+  useEffect(() => {
+    if (!permission?.granted) {
+      requestPermission();
+    }
+  }, [permission]);
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    Alert.alert('QR Code Scanned!', `Type: ${type}\nData: ${data}`);
+  };
+
+  if (!permission) {
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="Grant Permission" />
       </View>
-      
-      <Button 
-        title="Go Back" 
-        onPress={() => navigation.goBack()} 
-      />
-    </SafeAreaView>
+    );
+  }
+
+  const toggleCameraFacing = () => {
+    setFacing((current) => (current === 'back' ? 'front' : 'back'));
+  };
+
+  return (
+    <View style={styles.container}>
+      <CameraView
+        style={styles.camera}
+        facing={facing}
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      >
+        <View style={styles.qrCodeContainer}>
+          <Text style={styles.title}>Scan a QR Code</Text>
+        </View>
+
+        {scanned && (
+          <Button title="Scan Again" onPress={() => setScanned(false)} />
+        )}
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+            <Text style={styles.text}>Flip Camera</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Button title="Go Back" onPress={() => navigation.goBack()} />
+      </CameraView>
+    </View>
   );
 };
-
-export default QRCodeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -29,23 +70,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.themeBG,
   },
+  message: {
+    textAlign: 'center',
+    paddingBottom: 10,
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  },
+  qrCodeContainer: {
+    marginTop: 20,
+    marginBottom: 30,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: 'darkgreen',
   },
-  qrCodeContainer: {
-    width: 250,
-    height: 250,
-    borderWidth: 2,
-    borderColor: 'green',
-    marginBottom: 30,
+  buttonContainer: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 50,
+    width: '100%',
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  placeholderText: {
+  button: {
+    padding: 10,
+    backgroundColor: 'transparent',
+  },
+  text: {
     fontSize: 18,
-    color: 'darkgreen',
-  }
+    color: 'white',
+  },
 });
+
+export default QRCodeScreen;

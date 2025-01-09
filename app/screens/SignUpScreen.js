@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
-import { auth } from '../config/firebaseConfig';
-import { database } from '../config/firebaseConfig';
+import { auth } from 'E:/FYP/TrashCashApp/TrashCashApp/config/firebaseConfig.js';
+import { database } from 'E:/FYP/TrashCashApp/TrashCashApp/config/firebaseConfig.js';
 import CustomButton from '../components/customButton';
 import { colors } from '../styles/theme';
 

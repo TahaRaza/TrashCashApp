@@ -23,12 +23,23 @@
       "package": "com.tahahraza.TrashCashApp"
     },
     "web": {
-      "favicon": "./app/assets/favicon.png",
+      "favicon": "./app/assets/favicon.png"
     },
     "extra": {
       "eas": {
         "projectId": "e1b4ea12-5233-4731-89d7-85746eafe3f6"
       }
-    }
+    },
+    "plugins": [
+      "expo-barcode-scanner",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ]
   }
 }
