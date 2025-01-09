@@ -1,3 +1,5 @@
+// For testing and debugging
+
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, Alert } from 'react-native';
