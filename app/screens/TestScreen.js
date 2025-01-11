@@ -1,11 +1,9 @@
-// For testing and debugging
-
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, Alert } from 'react-native';
-import { colors } from '../styles/theme';
-import CustomButton from '../components/customButton';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomButton from '../components/customButton';
+import { colors } from '../styles/theme';
 
 const TestScreen = ({ navigation }) => {
   const [facing, setFacing] = useState('back');
@@ -19,10 +17,16 @@ const TestScreen = ({ navigation }) => {
     }
   }, [permission]);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = (result) => {
+    const { bounds, cornerPoints, data, type } = result;
+
     setScanned(true);
-    setScanInfo(`Type: ${type}\nData: ${data}`);
-    console.log('Scanned Data:', data);
+    setScanInfo(
+      `Type: ${type}\nData: ${data}\n` +
+      `Bounds: Origin(${bounds.origin.x}, ${bounds.origin.y}), Size(${bounds.size.width}x${bounds.size.height})\n` +
+      `Corner Points: ${cornerPoints?.map(({ x, y }) => `(${x}, ${y})`).join(', ') || 'N/A'}`
+    );
+
     Alert.alert('QR Code Scanned!', `Type: ${type}\nData: ${data}`);
   };
 
@@ -47,12 +51,13 @@ const TestScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Scan a QR Code</Text>
 
-      <View style={styles.qrCodeContainer}>
+      <View style={styles.cameraContainer}>
         <CameraView
           style={styles.camera}
           facing={facing}
-          onBarCodeScanned={({ data }) => {
-            console.log("data", data)
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barCodeScannerSettings={{
+            barCodeTypes: ['qr', 'ean13', 'code128', 'pdf417', 'aztec', 'datamatrix'],
           }}
         />
       </View>
@@ -60,17 +65,15 @@ const TestScreen = ({ navigation }) => {
       {scanned && (
         <View style={styles.scanInfoContainer}>
           <Text style={styles.scanInfo}>{scanInfo}</Text>
-          <Button title="Scan Again" onPress={() => setScanned(false)} />
+          <CustomButton title="Scan Again" onPress={() => setScanned(false)} />
         </View>
       )}
 
       <View style={styles.buttonContainer}>
-        <CustomButton title={"Flip Camera"} style={styles.flipButton} onPress={toggleCameraFacing}>
-          
-        </CustomButton>
+        <CustomButton title="Flip Camera" onPress={toggleCameraFacing} />
       </View>
 
-      <CustomButton  title="Go Back" onPress={() => navigation.goBack()} style={styles.goBackButton} />
+      <CustomButton title="Go Back" onPress={() => navigation.goBack()} style={styles.goBackButton} />
     </SafeAreaView>
   );
 };
@@ -86,48 +89,40 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 30,
+    color: '#333',
+    marginBottom: 20,
   },
-  qrCodeContainer: {
-    width: 300,
-    height: 300,
+  cameraContainer: {
+    width: '90%',
+    aspectRatio: 3 / 4,
     overflow: 'hidden',
     borderRadius: 10,
     borderWidth: 2,
     borderColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
   },
   camera: {
     flex: 1,
-    width: '100%',
   },
   scanInfoContainer: {
-    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginTop: 20,
   },
   scanInfo: {
     fontSize: 16,
-    color: 'black',
+    color: '#333',
     marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: 'row',
-    position: 'absolute',
-    top: 20,
-    width: '50%',
     justifyContent: 'center',
-  },
-  flipButton: {
-    
-  },
-  text: {
-    fontSize: 18,
-    color: 'white',
+    marginTop: 20,
   },
   goBackButton: {
-    marginTop: 30,
+    marginTop: 20,
   },
 });
 
