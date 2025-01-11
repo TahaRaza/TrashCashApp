@@ -2,10 +2,23 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
-import { auth } from 'E:/FYP/TrashCashApp/TrashCashApp/config/firebaseConfig.js';
-import { database } from 'E:/FYP/TrashCashApp/TrashCashApp/config/firebaseConfig.js';
+import { auth, database } from '../config/firebaseConfig';
 import CustomButton from '../components/customButton';
 import { colors } from '../styles/theme';
+
+// Helper function to save user data in the database
+const saveUserData = async (userUID, email, userName) => {
+  try {
+    await set(ref(database, `users/${userUID}`), {
+      email,         // User's email
+      username: userName, // User's name
+      points: 0,     // Default points for new user
+    });
+  } catch (error) {
+    console.error('Failed to save user data:', error.message || error.code);
+    throw new Error('Could not save user data.');
+  }
+};
 
 const SignUpScreen = ({ navigation }) => {
   const [userName, setUsername] = useState('');
@@ -14,23 +27,19 @@ const SignUpScreen = ({ navigation }) => {
 
   const handleSignUp = async () => {
     try {
-      // Firebase Authentication
+      // Step 1: Register the user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const userUID = userCredential.user.uid; // Get Firebase-assigned UID
 
-      // Save user data in Realtime Database
-      const userId = user.uid; // Firebase Auth provides a unique UID
-      await set(ref(database, `users/${userId}`), {
-        email: email,
-        username: userName,
-        points: 0, // Default points for new user
-      });
+      // Step 2: Save user data in the Realtime Database
+      await saveUserData(userUID, email, userName);
 
+      // Step 3: Notify the user and navigate to the login screen
       Alert.alert('Success', 'User registered successfully!');
       navigation.navigate('Login');
     } catch (error) {
-      console.error('Sign-up failed:', error.message);
-      Alert.alert('Error', error.message);
+      console.error('Sign-up failed:', error.message || error.code);
+      Alert.alert('Error', error.message || 'An error occurred during sign-up.');
     }
   };
 
