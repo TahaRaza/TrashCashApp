@@ -70,7 +70,7 @@ const DashboardScreen = ({ navigation, route }) => {
 
       <Pressable
         style={styles.button}
-        onPress={() => navigation.navigate("QRCode")}
+        onPress={() => navigation.navigate("QRCode", { uid: userUID })}
       >
         <Text style={styles.buttonText}>Scan QR Code</Text>
       </Pressable>

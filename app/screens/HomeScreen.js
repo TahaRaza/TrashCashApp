@@ -64,7 +64,7 @@ const HomeScreen = ({ navigation, route }) => {
         />
         <CustomButton
           title="Scan QR Code"
-          onPress={() => navigation.navigate("QRCode")}
+          onPress={() => navigation.navigate("QRCode", { uid: userUID })}
         />
       </View>
 

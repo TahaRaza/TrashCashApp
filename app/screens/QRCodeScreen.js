@@ -3,10 +3,15 @@ import { useState, useEffect } from "react";
 import { Button, StyleSheet, Text, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { ref, get, set } from "firebase/database";
+import { database } from "../config/firebaseConfig";
+
 import CustomButton from "../components/customButton";
 import { colors } from "../styles/theme";
 
-const QRCodeScreen = ({ navigation }) => {
+const QRCodeScreen = ({ navigation, route }) => {
+  const userUID = route.params?.uid;
+
   // State to track the camera facing direction (front or back).
   const [facing, setFacing] = useState("back");
 
@@ -27,22 +32,65 @@ const QRCodeScreen = ({ navigation }) => {
   }, [permission]);
 
   /**
+   * Increment points for the user in the database.
+   * @param {string} userUID - The unique identifier of the user.
+   * @param {number} pointsToAdd - The number of points to add.
+   */
+  const incrementUserPoints = async (userUID, pointsToAdd) => {
+    try {
+      const userPointsRef = ref(database, `users/${userUID}/points`);
+
+      // Get the current points
+      const snapshot = await get(userPointsRef);
+
+      let currentPoints = 0;
+      if (snapshot.exists()) {
+        currentPoints = snapshot.val();
+      }
+
+      // Update the points
+      const updatedPoints = currentPoints + pointsToAdd;
+      await set(userPointsRef, updatedPoints);
+
+      Alert.alert(
+        "Success",
+        `Your points have been updated! Total points: ${updatedPoints}`
+      );
+    } catch (error) {
+      console.error("Error updating points:", error);
+      Alert.alert("Error", "Could not update your points. Please try again.");
+    }
+  };
+
+  /**
    * Callback triggered when a QR code or barcode is scanned.
    * @param {Object} result - The result object from the scan containing type, data, and bounds.
    */
-  const handleBarCodeScanned = (result) => {
-    const { bounds, cornerPoints, data, type } = result;
+  const handleBarCodeScanned = async (result) => {
+    const { data, type } = result;
 
-    // Set the scanned state to true and store the scanned information.
+    // Ensure the scanned data is numeric
+    const scannedPoints = parseInt(data, 10);
+    if (isNaN(scannedPoints)) {
+      Alert.alert(
+        "Invalid QR Code",
+        "The scanned QR code does not contain valid points."
+      );
+      return;
+    }
+
     setScanned(true);
-    setScanInfo(
-      `Type: ${type}\nData: ${data}\n` +
-        `Bounds: Origin(${bounds.origin.x}, ${bounds.origin.y}), Size(${bounds.size.width}x${bounds.size.height})\n` +
-        `Corner Points: ${cornerPoints?.map(({ x, y }) => `(${x}, ${y})`).join(", ") || "N/A"}`
-    );
+    setScanInfo(`Type: ${type}\nData: ${data}`);
 
-    // Show an alert with the scanned QR code details.
+    // Show an alert with the scanned QR code details
     Alert.alert("QR Code Scanned!", `Type: ${type}\nData: ${data}`);
+
+    if (!userUID) {
+      Alert.alert("Error", "User is not logged in.");
+      return;
+    }
+
+    await incrementUserPoints(userUID, scannedPoints);
   };
 
   // Check if permission is still being determined.
@@ -78,16 +126,9 @@ const QRCodeScreen = ({ navigation }) => {
         <CameraView
           style={styles.camera}
           facing={facing}
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned} // Prevent scanning when already scanned
-          barCodeScannerSettings={{
-            barCodeTypes: [
-              "qr",
-              "ean13",
-              "code128",
-              "pdf417",
-              "aztec",
-              "datamatrix",
-            ], // Supported barcode types
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} // Prevent scanning when already scanned
+          barcodeScannerSettings={{
+            barCodeTypes: ["qr"], // Supported barcode types
           }}
         />
       </View>
@@ -118,7 +159,7 @@ const QRCodeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.themeBG, // Background color from the theme
+    backgroundColor: colors.themeBG,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
@@ -131,14 +172,14 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     width: "90%",
-    aspectRatio: 3 / 4, // Aspect ratio of the camera view
+    aspectRatio: 3 / 4,
     overflow: "hidden",
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: "green", // Border color of the camera view
+    borderColor: "green",
   },
   camera: {
-    flex: 1, // Occupies full space of the container
+    flex: 1,
   },
   scanInfoContainer: {
     alignItems: "center",
@@ -154,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonContainer: {
-    flexDirection: "row", // Buttons aligned in a row
+    flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
   },
