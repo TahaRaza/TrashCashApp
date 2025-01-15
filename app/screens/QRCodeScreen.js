@@ -113,9 +113,9 @@ const QRCodeScreen = ({ navigation, route }) => {
   /**
    * Toggles the camera between front and back.
    */
-  const toggleCameraFacing = () => {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  };
+  // const toggleCameraFacing = () => {
+  //   setFacing((current) => (current === "back" ? "front" : "back"));
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -141,10 +141,10 @@ const QRCodeScreen = ({ navigation, route }) => {
         </View>
       )}
 
-      {/* Button container for toggling the camera and navigation */}
+      {/* Button container for toggling the camera and navigation
       <View style={styles.buttonContainer}>
         <CustomButton title="Flip Camera" onPress={toggleCameraFacing} />
-      </View>
+      </View> */}
 
       <CustomButton
         title="Go Back"
