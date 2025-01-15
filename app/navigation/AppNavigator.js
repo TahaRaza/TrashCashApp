@@ -23,12 +23,12 @@ const AppNavigator = () => {
         />
         <Stack.Screen
           name="Login"
-          options={options.auth}
+          options={options.logIn}
           component={LoginScreen}
         />
         <Stack.Screen
           name="SignUp"
-          options={options.auth}
+          options={options.signin}
           component={SignUpScreen}
         />
         <Stack.Screen
@@ -54,10 +54,19 @@ const AppNavigator = () => {
 const options = {
   welcome: {
     headerShown: false,
+    title: "welcome",
   },
   home: {
     headerShown: false,
     title: "Home",
+  },
+  logIn: {
+    headerShown: false,
+    title: "Log In",
+  },
+  signin: {
+    headerShown: false,
+    title: "Sign In",
   },
   qrCode: {
     headerShown: false,
