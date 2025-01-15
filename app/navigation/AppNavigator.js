@@ -9,7 +9,6 @@ import SignUpScreen from "../screens/SignUpScreen";
 import HomeScreen from "../screens/HomeScreen"; // New Home Screen
 import QRCodeScreen from "../screens/QRCodeScreen";
 import DashboardScreen from "../screens/DashboardScreen";
-import TestScreen from "../screens/TestScreen";
 
 const Stack = createStackNavigator();
 
@@ -46,11 +45,6 @@ const AppNavigator = () => {
           name="QRCode"
           options={options.qrCode}
           component={QRCodeScreen}
-        />
-        <Stack.Screen
-          name="Test"
-          options={options.qrCode}
-          component={TestScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
